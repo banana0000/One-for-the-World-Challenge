@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ag-grid-react": "^33.2.1"
+  }
+}
