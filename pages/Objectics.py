@@ -78,7 +78,7 @@ layout = dbc.Container([
                 id='chart-type-radio',
                 options=[
                     {'label': 'Line Chart', 'value': 'line'},
-                    {'label': 'Stacked Bar Chart', 'value': 'bar'}
+                    {'label': 'Grouped Bar Chart', 'value': 'bar'}
                 ],
                 value='line',
                 labelStyle={'color': 'white'}
@@ -114,13 +114,16 @@ def update_chart(selected_years, chart_type):
             color='fiscal_year_label',
             title='Monthly Donations by Fiscal Year',
             labels={'fiscal_month_num': 'Month of Fiscal Year', y_col: 'Total Donations (USD)', 'fiscal_year_label': 'Fiscal Year'},
-            markers=False
+            markers=True,
+            line_shape='spline'
+    
         )
 
         fig.update_traces(
             line=dict(width=4),  # Thicker lines
             hovertemplate='Month: %{x}<br>Amount: $%{y:.2f}<extra>%{customdata}</extra>',
-            customdata=filtered['fiscal_year_label'].tolist()
+            customdata=filtered['fiscal_year_label'].tolist(),
+            marker=dict(size=10)
         )
 
     elif chart_type == 'bar':
@@ -131,7 +134,7 @@ def update_chart(selected_years, chart_type):
             color='fiscal_year_label',
             title='Monthly Donations by Fiscal Year (Stacked)',
             labels={'fiscal_month_num': 'Month of Fiscal Year', y_col: 'Total Donations (USD)', 'fiscal_year_label': 'Fiscal Year'},
-            barmode='stack'
+            barmode='group'
         )
 
     fig.update_xaxes(

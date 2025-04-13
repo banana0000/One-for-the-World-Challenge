@@ -90,13 +90,15 @@ layout = html.Div([
             title='Monthly Contributions by Pledge Type (Line Chart)',
             labels={'monthly_contribution': 'Monthly Contribution ($)', 'fiscal_year': 'Fiscal Year'},
             markers=True,
+            line_shape='spline',
             color_discrete_map={
                 'All Pledges': colors['primary'],
                 'Active Pledges': colors['highlight'],
                 'Future Pledges': colors['secondary']
             }
         )
-        .update_traces(line=dict(width=4))  # Thicker lines
+        .update_traces(line=dict(width=4),
+                       marker=dict(size=10))  # Thicker lines
         .update_layout(
             paper_bgcolor='black',
             plot_bgcolor='black',
