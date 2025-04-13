@@ -66,9 +66,9 @@ layout = html.Div([
 
     # KPI Section
     html.Div([  # KPI Section Here ...
-        html.Div(f"ALL ARR: ${total_arr:,.2f} monthly", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'white', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if total_arr > 0 else None,
-        html.Div(f"Future ARR: ${future_arr:,.2f} monthly", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'white', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if future_arr > 0 else None,
-        html.Div(f"Active ARR: ${active_arr:,.2f} monthly", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'white', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if active_arr > 0 else None,
+        html.Div(f"ALL ARR:   ${total_arr:,.2f} monthly", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'white', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if total_arr > 0 else None,
+        html.Div(f"Future ARR:   ${future_arr:,.2f} monthly", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'white', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if future_arr > 0 else None,
+        html.Div(f"Active ARR:   ${active_arr:,.2f} monthly", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'white', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if active_arr > 0 else None,
         html.Div(f"Monthly Attrition Rate: {attrition_rate:.2f}%", style={'fontSize': 24, 'fontWeight': 'bold', 'color': 'red', 'padding': '20px', 'borderRadius': '12px', 'backgroundColor': '#333', 'width': '300px', 'textAlign': 'center'}) if attrition_rate > 0 else None,
     ], style={
         'marginBottom': '20px',

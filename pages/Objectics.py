@@ -22,7 +22,6 @@ df_payments['fiscal_month_num'] = df_payments['date'].apply(lambda x: x.month - 
 monthly_totals = df_payments.groupby(['fiscal_year_label', 'fiscal_month_num'])['amount_usd'].sum().reset_index()
 monthly_totals = monthly_totals.sort_values(['fiscal_year_label', 'fiscal_month_num'])
 
-# Month names for better readability
 month_names = {1: 'Jul', 2: 'Aug', 3: 'Sep', 4: 'Oct', 5: 'Nov', 6: 'Dec',
                7: 'Jan', 8: 'Feb', 9: 'Mar', 10: 'Apr', 11: 'May', 12: 'Jun'}
 monthly_totals['month_name'] = monthly_totals['fiscal_month_num'].map(month_names)
@@ -56,6 +55,7 @@ layout = dbc.Container([
         dbc.Col(html.Div(id='kpi-arr'), width="auto"),
         dbc.Col(html.Div(id='kpi-attrition-rate'), width="auto"),
         dbc.Col(html.Div(id='kpi-active-donors'), width="auto"),
+        dbc.Col(html.Div(id='kpi-active-pledges'), width="auto")  # NEW KPI CARD
     ], justify="center", className="mb-4", style={'gap': '20px'}),
 
     dbc.Row([
@@ -91,14 +91,13 @@ layout = dbc.Container([
     ])
 ], fluid=True, style={"backgroundColor": "black", "padding": "40px"})
 
-# --- Callback to update the chart based on selected fiscal years and chart type ---
+# --- Callback to update the chart ---
 @callback(
     Output('line-fig', 'figure'),
     [Input('fiscal-year-dropdown', 'value'),
      Input('chart-type-radio', 'value')]
 )
 def update_chart(selected_years, chart_type):
-    # If no fiscal year is selected, show all data
     if not selected_years:
         filtered = monthly_totals
     else:
@@ -116,23 +115,20 @@ def update_chart(selected_years, chart_type):
             labels={'fiscal_month_num': 'Month of Fiscal Year', y_col: 'Total Donations (USD)', 'fiscal_year_label': 'Fiscal Year'},
             markers=True,
             line_shape='spline'
-    
         )
-
         fig.update_traces(
-            line=dict(width=4),  # Thicker lines
+            line=dict(width=4),
             hovertemplate='Month: %{x}<br>Amount: $%{y:.2f}<extra>%{customdata}</extra>',
             customdata=filtered['fiscal_year_label'].tolist(),
             marker=dict(size=10)
         )
-
     elif chart_type == 'bar':
         fig = px.bar(
             filtered,
             x='fiscal_month_num',
             y=y_col,
             color='fiscal_year_label',
-            title='Monthly Donations by Fiscal Year (Stacked)',
+            title='Monthly Donations by Fiscal Year (Grouped)',
             labels={'fiscal_month_num': 'Month of Fiscal Year', y_col: 'Total Donations (USD)', 'fiscal_year_label': 'Fiscal Year'},
             barmode='group'
         )
@@ -158,16 +154,16 @@ def update_chart(selected_years, chart_type):
 
     return fig
 
-# --- Callback to update KPIs based on selected fiscal years ---
+# --- Callback to update KPIs ---
 @callback(
     Output('kpi-money-moved', 'children'),
     Output('kpi-arr', 'children'),
     Output('kpi-attrition-rate', 'children'),
     Output('kpi-active-donors', 'children'),
+    Output('kpi-active-pledges', 'children'),  # NEW OUTPUT
     Input('fiscal-year-dropdown', 'value')
 )
 def update_kpis(selected_years):
-    # Filter the data based on selected fiscal years
     if not selected_years:
         df_filtered = df_payments
         pledges_filtered = df_pledges
@@ -176,15 +172,16 @@ def update_kpis(selected_years):
         df_filtered = df_payments[df_payments['fiscal_year'].isin(fiscal_years)]
         pledges_filtered = df_pledges[df_pledges['pledge_created_at'].dt.year.isin(fiscal_years)]
 
-    # Recalculate KPIs
     money_moved = df_filtered['amount_usd'].sum()
     monthly_avg = df_filtered.groupby(df_filtered['date'].dt.to_period('M'))['amount_usd'].sum().mean()
     active_arr = monthly_avg * 12 if not pd.isna(monthly_avg) else 0
     active_donors = pledges_filtered[pledges_filtered['pledge_status'].isin(['one-time', 'Active donor'])]['donor_id'].nunique()
+    active_pledges_count = pledges_filtered[pledges_filtered['pledge_status'] == 'Active donor']['donor_id'].nunique()
 
     return (
         kpi_card("Money Moved (Total)", money_moved, "$"),
         kpi_card("Active ARR", active_arr, "$"),
         kpi_card("Pledge Attrition Rate", pledge_attrition_rate * 100, "", "%"),
-        kpi_card("Total Active Donors", active_donors)
+        kpi_card("Total Active Donors", active_donors),
+        kpi_card("Total Active Pledges", active_pledges_count)
     )

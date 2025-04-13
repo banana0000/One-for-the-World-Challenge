@@ -26,7 +26,7 @@ layout = html.Div(
                 dbc.Card(
                     dbc.CardBody([  
                         html.H4("Home", style={"color": "white", "fontSize": "22px"}),
-                        html.P("This is the homepage, where you can explore the general dashboard and its metrics.", style={"color": "white"})
+                        html.P("This is the homepage, where you can explore the general dashboard.", style={"color": "white"})
                     ]),
                     style={"width": "300px", "backgroundColor": "#333", "borderRadius": "10px", "boxShadow": "0 4px 8px rgba(0, 0, 0, 0.2)"}
                 ),
